@@ -58,9 +58,25 @@ async (req, res) => {
 }
 
 const getSchedules = (client: PrismaClient): RequestHandler =>
-async (req, res) => {
+async (req: RequestWithJWTBody, res) => {
 
-  res.json({ data: "get schedules for user" });
+  const userId = req.jwtBody?.userId;
+  const user = await client.user.findFirst({
+      where: {
+        id: userId
+      }
+    });
+  if (!user) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+  }
+
+  const schedules = await client.schedule.findMany({
+    where: {
+      userId: user.id
+    }
+  })
+  res.json({ data: "get schedules for user", schedules });
 
 }
 
@@ -69,7 +85,7 @@ export const usersController = controller(
   [
     { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true},
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    { path: "/schedule", endpointBuilder: createSchedule, method: "post" }, // needs implement
-    { path: "/schedule", endpointBuilder: getSchedules, method: "get" }, // needs implement
+    // { path: "/schedule", endpointBuilder: createSchedule, method: "post" }, // needs implement
+    { path: "/schedule", endpointBuilder: getSchedules, method: "get" }, 
   ]
 )

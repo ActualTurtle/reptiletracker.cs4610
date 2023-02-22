@@ -53,11 +53,27 @@ const createSchedule = (client) => (req, res) => __awaiter(void 0, void 0, void 
     res.json({ data: "Create schedule for user" });
 });
 const getSchedules = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.json({ data: "get schedules for user" });
+    var _b;
+    const userId = (_b = req.jwtBody) === null || _b === void 0 ? void 0 : _b.userId;
+    const user = yield client.user.findFirst({
+        where: {
+            id: userId
+        }
+    });
+    if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+    const schedules = yield client.schedule.findMany({
+        where: {
+            userId: user.id
+        }
+    });
+    res.json({ data: "get schedules for user", schedules });
 });
 exports.usersController = (0, controller_1.controller)("users", [
     { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true },
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    { path: "/schedule", endpointBuilder: createSchedule, method: "post" },
-    { path: "/schedule", endpointBuilder: getSchedules, method: "get" }, // needs implement
+    // { path: "/schedule", endpointBuilder: createSchedule, method: "post" }, // needs implement
+    { path: "/schedule", endpointBuilder: getSchedules, method: "get" },
 ]);
