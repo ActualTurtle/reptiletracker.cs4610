@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import { JWTBody, RequestWithJWTBody } from "./dto/jwt";
 import { usersController } from "./controllers/users_controller";
+import { reptileController } from './controllers/reptiles_controller';
+import { controller } from './lib/controller';
 
 dotenv.config();
 
@@ -51,7 +53,8 @@ app.post("/login",  async (req, res) => {
   })
 });
 
-usersController(app, client);
+usersController(app, client); // "/user/"
+reptileController(app, client); // "/reptile/"
 
 app.get('/', (req: Request, res: Response) => {
   res.send('BUILD REPTILE TRACKER HERE');

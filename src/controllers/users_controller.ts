@@ -31,32 +31,45 @@ type CreateUserBody = {
 }
 
 const createUser = (client: PrismaClient): RequestHandler =>
-  async (req, res) => {
-    const {firstName, lastName, email, password} = req.body as CreateUserBody;
-    const passwordHash = await bcrypt.hash(password, 10);
-    const user = await client.user.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        passwordHash,
-      },
-    });
+async (req, res) => {
+  const {firstName, lastName, email, password} = req.body as CreateUserBody;
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = await client.user.create({
+    data: {
+      firstName,
+      lastName,
+      email,
+      passwordHash,
+    },
+  });
+  const token = jwt.sign({
+    userId: user.id
+  }, process.env.ENCRYPTION_KEY!!, {
+    expiresIn: '1m'
+  });
+  res.json({ user, token });
+}
 
-    const token = jwt.sign({
-      userId: user.id
-    }, process.env.ENCRYPTION_KEY!!, {
-      expiresIn: '1m'
-    });
+const createSchedule = (client: PrismaClient): RequestHandler =>
+async (req, res) => {
+  res.json({ data: "Create schedule for user" });
 
-    res.json({ user, token });
-  }
 
+}
+
+const getSchedules = (client: PrismaClient): RequestHandler =>
+async (req, res) => {
+
+  res.json({ data: "get schedules for user" });
+
+}
 
 export const usersController = controller(
   "users",
   [
+    { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true},
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    { path: "/", method: "post", endpointBuilder: createUser, skipAuth: true }
+    { path: "/schedule", endpointBuilder: createSchedule, method: "post" }, // needs implement
+    { path: "/schedule", endpointBuilder: getSchedules, method: "get" }, // needs implement
   ]
 )

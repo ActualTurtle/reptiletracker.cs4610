@@ -42,14 +42,6 @@ const createUser = (client) => (req, res) => __awaiter(void 0, void 0, void 0, f
             passwordHash,
         },
     });
-    // const user = await client.user.create({
-    //   data: {
-    //     firstName: firstName,
-    //     lastName: lastName,
-    //     email: email,
-    //     passwordHash: password,
-    //   },
-    // });
     const token = jsonwebtoken_1.default.sign({
         userId: user.id
     }, process.env.ENCRYPTION_KEY, {
@@ -57,7 +49,15 @@ const createUser = (client) => (req, res) => __awaiter(void 0, void 0, void 0, f
     });
     res.json({ user, token });
 });
+const createSchedule = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.json({ data: "Create schedule for user" });
+});
+const getSchedules = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.json({ data: "get schedules for user" });
+});
 exports.usersController = (0, controller_1.controller)("users", [
+    { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true },
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    { path: "/", method: "post", endpointBuilder: createUser, skipAuth: true }
+    { path: "/schedule", endpointBuilder: createSchedule, method: "post" },
+    { path: "/schedule", endpointBuilder: getSchedules, method: "get" }, // needs implement
 ]);

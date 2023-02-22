@@ -19,6 +19,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const users_controller_1 = require("./controllers/users_controller");
+const reptiles_controller_1 = require("./controllers/reptiles_controller");
 dotenv_1.default.config();
 const client = new client_1.PrismaClient();
 const app = (0, express_1.default)();
@@ -52,13 +53,11 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         token
     });
 }));
-(0, users_controller_1.usersController)(app, client);
+(0, users_controller_1.usersController)(app, client); // "/user/"
+(0, reptiles_controller_1.reptileController)(app, client); // "/reptile/"
 app.get('/', (req, res) => {
     res.send('BUILD REPTILE TRACKER HERE');
 });
-// app.get('/me', (req: Request, res: Response) => {
-//   res.send('Itsa me!');
-// });
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
