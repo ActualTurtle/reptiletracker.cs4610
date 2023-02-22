@@ -25,9 +25,9 @@ model Reptile {
   id Int @id @default(autoincrement())
   user User @relation(fields: [userId], references: [id])
   userId Int
-  species String
+  species String // one of "ball_python", "king_snake", "corn_snake", "redtail_boa"
   name String
-  sex String
+  sex String // either "m" or "f"
   feedings Feeding[]
   husbandryRecords HusbandryRecord[]
   schedules Schedule[]
@@ -62,7 +62,7 @@ model Schedule {
   reptileId Int
   user User @relation(fields: [userId], references: [id])
   userId Int
-  type String
+  type String // one of "feed", "record", "clean"
   description String
   monday Boolean
   tuesday Boolean
