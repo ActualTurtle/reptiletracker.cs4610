@@ -23,7 +23,8 @@ const authenticationMiddleware = (req, res, next) => __awaiter(void 0, void 0, v
         req.jwtBody = jwtBody;
     }
     catch (error) {
-        console.log("token failed validation");
+        console.log("token failed validation:");
+        console.log(error);
     }
     finally {
         next();

@@ -45,7 +45,7 @@ const createUser = (client) => (req, res) => __awaiter(void 0, void 0, void 0, f
     const token = jsonwebtoken_1.default.sign({
         userId: user.id
     }, process.env.ENCRYPTION_KEY, {
-        expiresIn: '1m'
+        expiresIn: '10m'
     });
     res.json({ user, token });
 });
