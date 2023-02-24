@@ -18,11 +18,11 @@ npm install
 Then,
 
 ```
-yarn db:migrate
+yarn migrate
 ```
 or
 ```
-npm run db:migrate
+npm run migrate
 ```
 
 

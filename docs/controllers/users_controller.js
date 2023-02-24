@@ -49,19 +49,9 @@ const createUser = (client) => (req, res) => __awaiter(void 0, void 0, void 0, f
     });
     res.json({ user, token });
 });
-const createSchedule = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("createSchedule called");
-    res.json({ data: "Create schedule for user" });
-});
 const getSchedules = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
     console.log("getSchedules called");
-    const userId = (_b = req.jwtBody) === null || _b === void 0 ? void 0 : _b.userId;
-    const user = yield client.user.findFirst({
-        where: {
-            id: userId
-        }
-    });
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -71,11 +61,10 @@ const getSchedules = (client) => (req, res) => __awaiter(void 0, void 0, void 0,
             userId: user.id
         }
     });
-    res.json({ data: "get schedules for user", schedules });
+    res.json({ data: "Got schedules for user", schedules });
 });
 exports.usersController = (0, controller_1.controller)("users", [
     { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true },
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    { path: "/schedule", endpointBuilder: createSchedule, method: "post" },
     { path: "/schedule", endpointBuilder: getSchedules, method: "get" },
 ]);

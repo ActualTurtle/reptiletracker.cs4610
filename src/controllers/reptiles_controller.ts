@@ -1,6 +1,6 @@
 import { PrismaClient, Reptile } from "@prisma/client";
 import { Express, RequestHandler } from "express";
-import { controller } from "../lib/controller";
+import { controller, getUser } from "../lib/controller";
 import { RequestWithJWTBody } from "../dto/jwt";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -12,24 +12,7 @@ type reptile = {
     sex: string,
 }
 
-/**
- * helper function for getting the user before doing anything else. Could go in a middleware, but I couldn't quite figure that out, so this is the next best thing.
- */
-async function getUser(req: RequestWithJWTBody, client: PrismaClient)  {
-    const userId = req.jwtBody?.userId;
-    console.log("UserId: " + userId);
-    if (userId == undefined) {
-        return undefined;
-    }
-    const user = await client.user.findFirst({
-        where: {
-            id: userId
-        }
-    });
-    console.log(user);
-    return user;
 
-}
 
 const createReptile = (client: PrismaClient): RequestHandler =>
 async (req: RequestWithJWTBody, res) => {
@@ -278,22 +261,25 @@ type schedule = {
 
 const createSchedule = (client: PrismaClient): RequestHandler =>
 async (req: RequestWithJWTBody, res) => {
-    const {type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as schedule;
-    const reptile = await client.reptile.findFirst({
-        where: {
-            id: parseInt(req.params.reptileid)
-        }
-    })
-    const userId = req.jwtBody?.userId;
-    const user = await client.user.findFirst({
-        where: {
-          id: userId
-        }
-      });
-    if (!reptile || !user) {
+    const user = await getUser(req, client);
+    if (!user){
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
+
+    const reptile = await client.reptile.findFirst({
+        where: {
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    });
+    
+    if (!reptile) {
+        res.status(404).json({ message: "Reptile not found" });
+        return;
+    }
+
+    const {type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as schedule;
 
     const schedule = await client.schedule.create({
         data: {
@@ -315,14 +301,22 @@ async (req: RequestWithJWTBody, res) => {
 }
 
 const getSchedules = (client: PrismaClient): RequestHandler =>
-async (req, res) => {
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
+    if (!user){
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+
     const reptile = await client.reptile.findFirst({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
+            userId: user.id
         }
-    })
+    });
+    
     if (!reptile) {
-        res.status(401).json({ message: "Unauthorized" });
+        res.status(404).json({ message: "Reptile not found" });
         return;
     }
 

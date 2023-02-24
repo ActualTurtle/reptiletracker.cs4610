@@ -11,28 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reptileController = void 0;
 const controller_1 = require("../lib/controller");
-/**
- * helper function for getting the user before doing anything else. Could go in a middleware, but I couldn't quite figure that out, so this is the next best thing.
- */
-function getUser(req, client) {
-    var _a;
-    return __awaiter(this, void 0, void 0, function* () {
-        const userId = (_a = req.jwtBody) === null || _a === void 0 ? void 0 : _a.userId;
-        console.log("UserId: " + userId);
-        if (userId == undefined) {
-            return undefined;
-        }
-        const user = yield client.user.findFirst({
-            where: {
-                id: userId
-            }
-        });
-        console.log(user);
-        return user;
-    });
-}
 const createReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield getUser(req, client);
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -49,7 +29,7 @@ const createReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0
     res.json({ message: "reptile created", reptile });
 });
 const getAllReptiles = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield getUser(req, client);
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -62,7 +42,7 @@ const getAllReptiles = (client) => (req, res) => __awaiter(void 0, void 0, void 
     res.json({ message: "getting all reptiles", reptiles });
 });
 const deleteReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield getUser(req, client);
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -86,7 +66,7 @@ const deleteReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0
     res.json({ message: `delete a reptile ${parseInt(req.params.reptileid)}`, reptile });
 });
 const updateReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield getUser(req, client);
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -115,7 +95,7 @@ const updateReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0
     res.json({ message: "Updated a reptile", reptile });
 });
 const createFeeding = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield getUser(req, client);
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -140,7 +120,7 @@ const createFeeding = (client) => (req, res) => __awaiter(void 0, void 0, void 0
     res.json({ message: "Create a feeding for a reptile", feeding });
 });
 const getFeedings = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield getUser(req, client);
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -163,7 +143,7 @@ const getFeedings = (client) => (req, res) => __awaiter(void 0, void 0, void 0, 
     res.json({ message: "Got feedings for a reptile", feedings });
 });
 const createHusbandry = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield getUser(req, client);
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -191,7 +171,7 @@ const createHusbandry = (client) => (req, res) => __awaiter(void 0, void 0, void
     res.json({ message: "Created a husbandy", husbandry });
 });
 const getHusbandries = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield getUser(req, client);
+    const user = yield (0, controller_1.getUser)(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -214,23 +194,22 @@ const getHusbandries = (client) => (req, res) => __awaiter(void 0, void 0, void 
     res.json({ message: "Got list of husbandries", husbandries });
 });
 const createSchedule = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const { type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday } = req.body;
-    const reptile = yield client.reptile.findFirst({
-        where: {
-            id: parseInt(req.params.reptileid)
-        }
-    });
-    const userId = (_a = req.jwtBody) === null || _a === void 0 ? void 0 : _a.userId;
-    const user = yield client.user.findFirst({
-        where: {
-            id: userId
-        }
-    });
-    if (!reptile || !user) {
+    const user = yield (0, controller_1.getUser)(req, client);
+    if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
+    const reptile = yield client.reptile.findFirst({
+        where: {
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    });
+    if (!reptile) {
+        res.status(404).json({ message: "Reptile not found" });
+        return;
+    }
+    const { type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday } = req.body;
     const schedule = yield client.schedule.create({
         data: {
             userId: user.id,
@@ -249,13 +228,19 @@ const createSchedule = (client) => (req, res) => __awaiter(void 0, void 0, void 
     res.json({ message: "Create a schedule for reptile", schedule });
 });
 const getSchedules = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield (0, controller_1.getUser)(req, client);
+    if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
     const reptile = yield client.reptile.findFirst({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
+            userId: user.id
         }
     });
     if (!reptile) {
-        res.status(401).json({ message: "Unauthorized" });
+        res.status(404).json({ message: "Reptile not found" });
         return;
     }
     const schedules = yield client.schedule.findMany({

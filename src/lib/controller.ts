@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import express, { RequestHandler, Express } from "express"
+import { RequestWithJWTBody } from "../dto/jwt"
 import { authenticationMiddleware } from "../middleware/authentication"
 
 export type Route = {
@@ -24,4 +25,23 @@ export const controller = (name: string, routes: Route[]) => (app: Express, clie
     router[route.method](route.path, route.endpointBuilder(client));
   })
   app.use(`/${name}`, router);
+}
+
+/**
+ * helper function for getting the user before doing anything else. Could go in a middleware, but I couldn't quite figure that out, so this is the next best thing.
+ */
+export async function getUser(req: RequestWithJWTBody, client: PrismaClient)  {
+  const userId = req.jwtBody?.userId;
+  console.log("UserId: " + userId);
+  if (userId == undefined) {
+      return undefined;
+  }
+  const user = await client.user.findFirst({
+      where: {
+          id: userId
+      }
+  });
+  console.log(user);
+  return user;
+
 }
