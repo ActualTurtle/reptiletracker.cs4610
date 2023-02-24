@@ -7,6 +7,7 @@ import { controller } from "../lib/controller";
 
 const getMe = (client: PrismaClient): RequestHandler =>
   async (req: RequestWithJWTBody, res) => {
+    console.log("getMe Called");
     const userId = req.jwtBody?.userId;
     if (!userId) {
       res.status(401).json({ message: "Unauthorized" });
@@ -20,7 +21,6 @@ const getMe = (client: PrismaClient): RequestHandler =>
     });
 
     res.json({ user });
-    // TODO get the user
   }
 
 type CreateUserBody = {
@@ -52,6 +52,7 @@ async (req, res) => {
 
 const createSchedule = (client: PrismaClient): RequestHandler =>
 async (req, res) => {
+  console.log("createSchedule called");
   res.json({ data: "Create schedule for user" });
 
 
@@ -59,6 +60,7 @@ async (req, res) => {
 
 const getSchedules = (client: PrismaClient): RequestHandler =>
 async (req: RequestWithJWTBody, res) => {
+  console.log("getSchedules called");
 
   const userId = req.jwtBody?.userId;
   const user = await client.user.findFirst({
@@ -85,7 +87,7 @@ export const usersController = controller(
   [
     { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true},
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    // { path: "/schedule", endpointBuilder: createSchedule, method: "post" }, // needs implement
+    { path: "/schedule", endpointBuilder: createSchedule, method: "post" }, // needs implement
     { path: "/schedule", endpointBuilder: getSchedules, method: "get" }, 
   ]
 )

@@ -11,19 +11,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reptileController = void 0;
 const controller_1 = require("../lib/controller");
-const createReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+/**
+ * helper function for getting the user before doing anything else. Could go in a middleware, but I couldn't quite figure that out, so this is the next best thing.
+ */
+function getUser(req, client) {
     var _a;
-    const userId = (_a = req.jwtBody) === null || _a === void 0 ? void 0 : _a.userId;
-    const { species, name, sex } = req.body;
-    const user = yield client.user.findFirst({
-        where: {
-            id: userId
+    return __awaiter(this, void 0, void 0, function* () {
+        const userId = (_a = req.jwtBody) === null || _a === void 0 ? void 0 : _a.userId;
+        console.log(userId);
+        if (userId == undefined) {
+            return undefined;
         }
+        const user = yield client.user.findFirst({
+            where: {
+                id: userId
+            }
+        });
+        console.log(user);
+        return user;
     });
+}
+const createReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield getUser(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
+    const { species, name, sex } = req.body;
     const reptile = yield client.reptile.create({
         data: {
             userId: user.id,
@@ -35,12 +49,7 @@ const createReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0
     res.json({ message: "reptile created", reptile });
 });
 const getAllReptiles = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.body;
-    const user = yield client.user.findFirst({
-        where: {
-            id: userId
-        }
-    });
+    const user = yield getUser(req, client);
     if (!user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -53,18 +62,49 @@ const getAllReptiles = (client) => (req, res) => __awaiter(void 0, void 0, void 
     res.json({ message: "getting all reptiles", reptiles });
 });
 const deleteReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const reptile = yield client.reptile.delete({
+    const user = yield getUser(req, client);
+    if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+    const reptile = yield client.reptile.findFirst({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    });
+    if (!reptile) {
+        res.status(404).json({ message: "No reptile found." });
+        return;
+    }
+    console.log(reptile);
+    yield client.reptile.delete({
+        where: {
+            id: parseInt(req.params.reptileid),
         }
     });
     res.json({ message: `delete a reptile ${parseInt(req.params.reptileid)}`, reptile });
 });
 const updateReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { species, name, sex } = req.body;
-    const reptile = client.reptile.update({
+    const user = yield getUser(req, client);
+    if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+    const existing_reptlie = yield client.reptile.findFirst({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    });
+    if (!existing_reptlie) {
+        res.status(404).json({ message: "Reptile not found." });
+        return;
+    }
+    const { species, name, sex } = req.body;
+    const reptile = yield client.reptile.update({
+        where: {
+            id: parseInt(req.params.reptileid),
         },
         data: {
             species,
@@ -72,9 +112,14 @@ const updateReptile = (client) => (req, res) => __awaiter(void 0, void 0, void 0
             sex
         }
     });
-    res.json({ message: "Update a reptile", reptile });
+    res.json({ message: "Updated a reptile", reptile });
 });
 const createFeeding = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield getUser(req, client);
+    if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
     const { foodItem } = req.body;
     const reptile = yield client.reptile.findFirst({
         where: {
@@ -150,14 +195,14 @@ const getHusbandries = (client) => (req, res) => __awaiter(void 0, void 0, void 
     res.json({ message: "get list of husbandries", husbandries });
 });
 const createSchedule = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _a;
     const { type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday } = req.body;
     const reptile = yield client.reptile.findFirst({
         where: {
             id: parseInt(req.params.reptileid)
         }
     });
-    const userId = (_b = req.jwtBody) === null || _b === void 0 ? void 0 : _b.userId;
+    const userId = (_a = req.jwtBody) === null || _a === void 0 ? void 0 : _a.userId;
     const user = yield client.user.findFirst({
         where: {
             id: userId

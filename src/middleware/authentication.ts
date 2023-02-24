@@ -9,9 +9,10 @@ export const authenticationMiddleware: RequestHandler = async (req: RequestWithJ
     const jwtBody = jwt.verify(token || '', process.env.ENCRYPTION_KEY!!) as JWTBody;
     req.jwtBody = jwtBody;
   } catch (error) {
-    console.log("token failed validation:");
+    console.log("token failed validation: ");
     console.log(error);
-  } finally {
-    next();
-  }
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  } 
+  next();
 }

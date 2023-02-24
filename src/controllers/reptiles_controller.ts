@@ -4,6 +4,7 @@ import { controller } from "../lib/controller";
 import { RequestWithJWTBody } from "../dto/jwt";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { getSourceMapRange, toEditorSettings } from "typescript";
 
 type reptile = {
     species: string, // one of "ball_python", "king_snake", "corn_snake", "redtail_boa"
@@ -11,20 +12,34 @@ type reptile = {
     sex: string,
 }
 
-const createReptile = (client: PrismaClient): RequestHandler =>
-async (req: RequestWithJWTBody, res) => {
+/**
+ * helper function for getting the user before doing anything else. Could go in a middleware, but I couldn't quite figure that out, so this is the next best thing.
+ */
+async function getUser(req: RequestWithJWTBody, client: PrismaClient)  {
     const userId = req.jwtBody?.userId;
-    const {species, name, sex} = req.body as reptile;
+    console.log(userId);
+    if (userId == undefined) {
+        return undefined;
+    }
     const user = await client.user.findFirst({
         where: {
-          id: userId
+            id: userId
         }
-      });
+    });
+    console.log(user);
+    return user;
+
+}
+
+const createReptile = (client: PrismaClient): RequestHandler =>
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
     if (!user){
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
-
+    
+    const {species, name, sex} = req.body as reptile;
     const reptile = await client.reptile.create({
         data: {
             userId: user.id,
@@ -37,13 +52,8 @@ async (req: RequestWithJWTBody, res) => {
 }
 
 const getAllReptiles = (client: PrismaClient): RequestHandler =>
-async (req, res) => {
-    const {userId} = req.body;
-    const user = await client.user.findFirst({
-        where: {
-          id: userId
-        }
-      });
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
     if (!user){
         res.status(401).json({ message: "Unauthorized" });
         return;
@@ -58,10 +68,26 @@ async (req, res) => {
 }
 
 const deleteReptile = (client: PrismaClient): RequestHandler =>
-async (req, res) => {
-    const reptile = await client.reptile.delete({
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
+    if (!user){
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+    const reptile = await client.reptile.findFirst({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    })
+    if (!reptile) {
+        res.status(404).json({ message: "No reptile found."})
+        return;
+    }
+    console.log(reptile);
+    await client.reptile.delete({
+        where: {
+            id: parseInt(req.params.reptileid),
         }
     })
 
@@ -70,22 +96,39 @@ async (req, res) => {
 }
 
 const updateReptile = (client: PrismaClient): RequestHandler =>
-async (req, res) => {
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
+    if (!user){
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+
+    
+    const existing_reptlie = await client.reptile.findFirst({
+        where: {
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    });
+    if (!existing_reptlie) {
+        res.status(404).json({ message: "Reptile not found."});
+        return;
+    }
 
     const {species, name, sex} = req.body as reptile;
 
-    const reptile = client.reptile.update({
+    const reptile = await client.reptile.update({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
         },
         data: {
             species,
             name,
             sex
         }
-    })
+    });
 
-    res.json({ message: "Update a reptile", reptile });
+    res.json({ message: "Updated a reptile", reptile });
   
 }
 
@@ -94,8 +137,13 @@ type feeding = {
 }
 
 const createFeeding = (client: PrismaClient): RequestHandler => 
-async (req, res) => {
-
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
+    if (!user){
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+    
     const { foodItem} = req.body as feeding;
     const reptile = await client.reptile.findFirst({
         where: {

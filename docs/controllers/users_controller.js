@@ -18,6 +18,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const controller_1 = require("../lib/controller");
 const getMe = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
+    console.log("getMe Called");
     const userId = (_a = req.jwtBody) === null || _a === void 0 ? void 0 : _a.userId;
     if (!userId) {
         res.status(401).json({ message: "Unauthorized" });
@@ -29,7 +30,6 @@ const getMe = (client) => (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
     });
     res.json({ user });
-    // TODO get the user
 });
 const createUser = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { firstName, lastName, email, password } = req.body;
@@ -50,10 +50,12 @@ const createUser = (client) => (req, res) => __awaiter(void 0, void 0, void 0, f
     res.json({ user, token });
 });
 const createSchedule = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("createSchedule called");
     res.json({ data: "Create schedule for user" });
 });
 const getSchedules = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
+    console.log("getSchedules called");
     const userId = (_b = req.jwtBody) === null || _b === void 0 ? void 0 : _b.userId;
     const user = yield client.user.findFirst({
         where: {
@@ -74,6 +76,6 @@ const getSchedules = (client) => (req, res) => __awaiter(void 0, void 0, void 0,
 exports.usersController = (0, controller_1.controller)("users", [
     { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true },
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    // { path: "/schedule", endpointBuilder: createSchedule, method: "post" }, // needs implement
+    { path: "/schedule", endpointBuilder: createSchedule, method: "post" },
     { path: "/schedule", endpointBuilder: getSchedules, method: "get" },
 ]);
