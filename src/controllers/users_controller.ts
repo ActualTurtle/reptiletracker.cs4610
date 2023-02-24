@@ -3,10 +3,11 @@ import { Express, RequestHandler } from "express";
 import { RequestWithJWTBody } from "../dto/jwt";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { controller } from "../lib/controller";
+import { controller, getUser } from "../lib/controller";
 
 const getMe = (client: PrismaClient): RequestHandler =>
   async (req: RequestWithJWTBody, res) => {
+    console.log("getMe Called");
     const userId = req.jwtBody?.userId;
     if (!userId) {
       res.status(401).json({ message: "Unauthorized" });
@@ -20,7 +21,6 @@ const getMe = (client: PrismaClient): RequestHandler =>
     });
 
     res.json({ user });
-    // TODO get the user
   }
 
 type CreateUserBody = {
@@ -50,23 +50,11 @@ async (req, res) => {
   res.json({ user, token });
 }
 
-const createSchedule = (client: PrismaClient): RequestHandler =>
-async (req, res) => {
-  res.json({ data: "Create schedule for user" });
-
-
-}
-
 const getSchedules = (client: PrismaClient): RequestHandler =>
 async (req: RequestWithJWTBody, res) => {
-
-  const userId = req.jwtBody?.userId;
-  const user = await client.user.findFirst({
-      where: {
-        id: userId
-      }
-    });
-  if (!user) {
+  console.log("getSchedules called");
+  const user = await getUser(req, client);
+  if (!user){
       res.status(401).json({ message: "Unauthorized" });
       return;
   }
@@ -76,7 +64,7 @@ async (req: RequestWithJWTBody, res) => {
       userId: user.id
     }
   })
-  res.json({ data: "get schedules for user", schedules });
+  res.json({ data: "Got schedules for user", schedules });
 
 }
 
@@ -85,7 +73,6 @@ export const usersController = controller(
   [
     { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true},
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    // { path: "/schedule", endpointBuilder: createSchedule, method: "post" }, // needs implement
     { path: "/schedule", endpointBuilder: getSchedules, method: "get" }, 
   ]
 )

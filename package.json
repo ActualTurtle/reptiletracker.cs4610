@@ -24,6 +24,7 @@
     "build": "npx tsc",
     "start": "node docs/index.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q docs/index.js\"",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "migrate": "prisma migrate dev"
   }
 }
