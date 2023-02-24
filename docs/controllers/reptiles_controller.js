@@ -123,11 +123,12 @@ const createFeeding = (client) => (req, res) => __awaiter(void 0, void 0, void 0
     const { foodItem } = req.body;
     const reptile = yield client.reptile.findFirst({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
+            userId: user.id
         }
     });
     if (!reptile) {
-        res.status(401).json({ message: "Unauthorized" });
+        res.status(404).json({ message: "Reptile Not Found" });
         return;
     }
     const feeding = yield client.feeding.create({
@@ -139,13 +140,19 @@ const createFeeding = (client) => (req, res) => __awaiter(void 0, void 0, void 0
     res.json({ message: "Create a feeding for a reptile", feeding });
 });
 const getFeedings = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield getUser(req, client);
+    if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
     const reptile = yield client.reptile.findFirst({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
+            userId: user.id
         }
     });
     if (!reptile) {
-        res.status(401).json({ message: "Unauthorized" });
+        res.status(404).json({ message: "Reptile not found" });
         return;
     }
     const feedings = yield client.feeding.findMany({
@@ -153,7 +160,7 @@ const getFeedings = (client) => (req, res) => __awaiter(void 0, void 0, void 0, 
             reptileId: reptile.id
         }
     });
-    res.json({ message: "get feedings for a reptile", feedings });
+    res.json({ message: "Got feedings for a reptile", feedings });
 });
 const createHusbandry = (client) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { length, weight, temperature, humidity } = req.body;

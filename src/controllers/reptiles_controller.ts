@@ -143,16 +143,17 @@ async (req: RequestWithJWTBody, res) => {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
-    
-    const { foodItem} = req.body as feeding;
+
+    const {foodItem} = req.body as feeding;
     const reptile = await client.reptile.findFirst({
         where: {
-            id: parseInt(req.params.reptileid)
+            id: parseInt(req.params.reptileid),
+            userId: user.id
         }
-    })
+    });
 
     if (!reptile) {
-        res.status(401).json({ message: "Unauthorized" });
+        res.status(404).json({ message: "Reptile Not Found" });
         return;
     }
 
@@ -161,29 +162,37 @@ async (req: RequestWithJWTBody, res) => {
             reptileId: reptile.id,
             foodItem
         }
-    })
+    });
     res.json({ message: "Create a feeding for a reptile", feeding });
     
 }
 
 const getFeedings = (client: PrismaClient): RequestHandler => 
-async (req, res) => {
-    const reptile = await client.reptile.findFirst({
-        where: {
-            id: parseInt(req.params.reptileid)
-        }
-    })
-
-    if (!reptile) {
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
+    if (!user){
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
+
+    const reptile = await client.reptile.findFirst({
+        where: {
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    });
+
+    if (!reptile) {
+        res.status(404).json({ message: "Reptile not found" });
+        return;
+    }
+
     const feedings = await client.feeding.findMany({
         where: {
             reptileId: reptile.id
         }
-    })
-    res.json({ message: "get feedings for a reptile", feedings });
+    });
+    res.json({ message: "Got feedings for a reptile", feedings });
     
 }
 
