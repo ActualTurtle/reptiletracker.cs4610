@@ -1,4 +1,9 @@
-# reptiletracker.cs4610
+# CS 4610 Assignment 2: reptiletracker.cs4610
+
+> Authors:
+> - Aryan Osqueezadeh
+> - Drew Tuttle
+> - Matthew Hill
 
 ## Setup
 
