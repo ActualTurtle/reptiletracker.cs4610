@@ -13,10 +13,10 @@ Test each route's user authentication,
 - [x] I should be able to delete a reptile
 - [x] I should be able to update a reptile
 - [x] I should be able to list all of my reptiles
-- [] I should be able to create a feeding for a reptile
-- [] I should be able to list all of the feedings for a reptile
-- [] I should be able to create a husbandry record for a reptile
-- [] I should be able to list all of the husbandry records for a reptile
+- [x] I should be able to create a feeding for a reptile
+- [x] I should be able to list all of the feedings for a reptile
+- [x] I should be able to create a husbandry record for a reptile
+- [x] I should be able to list all of the husbandry records for a reptile
 - [] I should be able to create a schedule for a reptile
 - [] I should be able to list all of the schedules for a reptile
 - [] I should be able to list all of the schedules for a user

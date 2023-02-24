@@ -17,7 +17,7 @@ type reptile = {
  */
 async function getUser(req: RequestWithJWTBody, client: PrismaClient)  {
     const userId = req.jwtBody?.userId;
-    console.log(userId);
+    console.log("UserId: " + userId);
     if (userId == undefined) {
         return undefined;
     }
@@ -204,21 +204,27 @@ type husbandry = {
 }
 
 const createHusbandry = (client: PrismaClient): RequestHandler => 
-async (req, res) => {
-
-    const {length, weight, temperature, humidity} = req.body as husbandry
-    const reptile = await client.reptile.findFirst({
-        where: {
-            id: parseInt(req.params.reptileid)
-        }
-    })
-
-    if (!reptile) {
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
+    if (!user){
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
 
-    const husbnadry = await client.husbandryRecord.create({
+    const reptile = await client.reptile.findFirst({
+        where: {
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    });
+    
+    if (!reptile) {
+        res.status(404).json({ message: "Reptile not found" });
+        return;
+    }
+    
+    const {length, weight, temperature, humidity} = req.body as husbandry
+    const husbandry = await client.husbandryRecord.create({
         data: {
             reptileId: reptile.id,
             length,
@@ -226,27 +232,36 @@ async (req, res) => {
             temperature,
             humidity
         }
-    })
-    res.json({ message: "create a husbandy",  husbnadry});
+    });
+    res.json({ message: "Created a husbandy",  husbandry});
 }
 
 const getHusbandries = (client: PrismaClient): RequestHandler => 
-async (req, res) => {
-    const reptile = await client.reptile.findFirst({
-        where: {
-            id: parseInt(req.params.reptileid)
-        }
-    })
-    if (!reptile) {
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
+    if (!user){
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
+
+    const reptile = await client.reptile.findFirst({
+        where: {
+            id: parseInt(req.params.reptileid),
+            userId: user.id
+        }
+    });
+    
+    if (!reptile) {
+        res.status(404).json({ message: "Reptile not found" });
+        return;
+    }
+
     const husbandries = await client.husbandryRecord.findMany({
         where: {
             reptileId: reptile.id
         }
-    })
-    res.json({ message: "get list of husbandries", husbandries });
+    });
+    res.json({ message: "Got list of husbandries", husbandries });
 }
 
 type schedule = {
