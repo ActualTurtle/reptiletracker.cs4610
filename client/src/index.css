@@ -97,12 +97,8 @@ button:focus-visible {
   width: 70%;
 }
 
-.login-buttons.page {
-  flex-direction: column;
-}
-
 .inputs {
-  width: 25%;
+  width: 30%;
 }
 
 .text-inputs {
@@ -113,4 +109,12 @@ button:focus-visible {
   align-items: center;
   text-align: center;
   justify-content: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.column {
+  flex-direction: column;
 }

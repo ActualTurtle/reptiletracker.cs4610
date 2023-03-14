@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 // TODO: Login Page
 
 // I should be able to sign into a user account
-// I should be able to navigate to the signup page
 // Upon signing in, I should be redirected to the dashboard page
 
 interface User {
@@ -15,14 +14,14 @@ interface User {
 }
 
 export const Login = () => {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     // const bcrypt = require('bcrypt');
 
     function login() {
-        if (!username || !password) return;
-        console.log(username);
+        if (!email || !password) return;
+        console.log(email);
         console.log(password);
 
         // TODO: Get user by username
@@ -51,22 +50,27 @@ export const Login = () => {
     }
 
     return (
-        <div className="login-buttons page">
-            <div className="inputs">
-                Username: 
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="text-inputs" />
+        <div>
+            <h1 className="center">Login</h1>
+            <div className="login-buttons column">
+                <div className="inputs flex column">
+                    <div className="inputs">
+                        Email: 
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="text-inputs" />
+                    </div>
+
+                    <div className="inputs">
+                        Password: 
+                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="text-inputs" />
+                    </div>
+                </div>
+
+                <button onClick={() => login()}>Log In</button>
+
+                <span className="text-inputs">Don't have an account?
+                    <Link to={`/signup`} className="login-links center">Signup</Link>
+                </span>
             </div>
-
-            <div className="inputs">
-                Password: 
-                <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} className="text-inputs" />
-            </div>
-
-            <button onClick={() => login()}>Log In</button>
-
-            <span className="text-inputs">Don't have an account?
-                <Link to={`/signup`} className="login-links center">Signup</Link>
-            </span>
         </div>
     )
 }
