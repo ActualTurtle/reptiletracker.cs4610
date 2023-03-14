@@ -96,3 +96,21 @@ button:focus-visible {
   text-align: center;
   width: 70%;
 }
+
+.login-buttons.page {
+  flex-direction: column;
+}
+
+.inputs {
+  width: 25%;
+}
+
+.text-inputs {
+  margin: 5%;
+}
+
+.center {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
