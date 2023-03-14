@@ -7,6 +7,14 @@ import { Link } from "react-router-dom";
 // I should be able to navigate to the Login page
 // Upon creating an account I should be redirected to the dashboard page
 
+interface User {
+    id?: number;
+    firstName: String;
+    lastName: String;
+    email: String;
+    passwordHash: String;
+}
+
 export const SignUp = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -19,6 +27,25 @@ export const SignUp = () => {
         console.log(lastName);
         console.log(email);
         console.log(password);
+
+        const user: User = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            passwordHash: password
+        }
+        
+        fetch("http://localhost:8000/users", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+        })
+        .then(r => r.json())
+        .then(body => {
+            console.log(body);
+        });
     }
 
     return (

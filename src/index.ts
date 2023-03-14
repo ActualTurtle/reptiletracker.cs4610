@@ -8,6 +8,7 @@ import { JWTBody, RequestWithJWTBody } from "./dto/jwt";
 import { usersController } from "./controllers/users_controller";
 import { reptileController } from './controllers/reptiles_controller';
 import { controller } from './lib/controller';
+import cors from "cors";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ const port = process.env.PORT;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 type LoginBody = {
   email: string,

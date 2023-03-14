@@ -7,17 +7,13 @@ import { Link } from "react-router-dom";
 
 interface User {
     id?: number;
-    firstName: String
-    lastName: String
-    email: String
-    passwordHash: String
+    email: String;
+    passwordHash: String;
 }
 
 export const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    // const bcrypt = require('bcrypt');
 
     function login() {
         if (!email || !password) return;
@@ -29,24 +25,22 @@ export const Login = () => {
         // if true, navigate to dashboard
         // if false, print error message, clear username and password
         
-    
-        /* UGLY */
-        // const user: User = {
-        //     content: description,
-        //     isCompleted: false
-        // }
-        // const hashedPassword = bcrypt.default.hash(password, 10);
-        // fetch("http://localhost:8000/todos", {
-        // method: "post",
-        // headers: {
-        //     "Content-Type": "application/json"
-        // },
-        // body: JSON.stringify(todo)
-        // })
-        // .then(r => r.json())
-        // .then(body => {
-        //     setTodos([body.todo, ...todos]);
-        // });
+        const user: User = {
+            email: email,
+            passwordHash: password
+        }
+        
+        fetch("http://localhost:8000/login/", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+        })
+        .then(r => r.json())
+        .then(body => {
+            console.log(body);
+        });
     }
 
     return (
