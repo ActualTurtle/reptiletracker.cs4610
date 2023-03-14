@@ -12,8 +12,8 @@ export const Home = () => {
       </h3>
 
       <div className="login-buttons">
-        <span><Link to={`/login`} className="login-links">Login </Link></span>
-        <span><Link to={`/signup`} className="login-links"> Signup</Link></span>
+        <span><Link to={`/login`} className="login-links">Login</Link></span>
+        <span><Link to={`/signup`} className="login-links">Signup</Link></span>
       </div>
     </div>
   )

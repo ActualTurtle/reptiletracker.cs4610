@@ -13,7 +13,7 @@ export const Root = () => {
 
   return (
     <>
-      <nav className="navbar">{name}</nav>
+      {/* <nav className="navbar">{name}</nav> */}
       <Outlet />
     </>
   )

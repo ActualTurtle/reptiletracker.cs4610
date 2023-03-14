@@ -113,3 +113,25 @@ button:focus-visible {
   text-align: center;
   width: 70%;
 }
+
+.inputs {
+  width: 30%;
+}
+
+.text-inputs {
+  margin: 5%;
+}
+
+.center {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.column {
+  flex-direction: column;
+}
