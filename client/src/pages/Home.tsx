@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 // If I am already logged in, then I should be redirected (replace state) to the dashboard page when I reach this page. 
 
 export const Home = () => {
-  return  (
+  return (
     <div className="home">
       <h1>Reptile Tracker</h1>
       <h3 className="description">
