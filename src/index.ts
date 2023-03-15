@@ -26,8 +26,8 @@ type LoginBody = {
 }
 
 // log in
-app.post("/login",  async (req, res) => {
-  const {email, password} = req.body as LoginBody;
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body as LoginBody;
   const user = await client.user.findFirst({
     where: {
       email,
@@ -47,7 +47,7 @@ app.post("/login",  async (req, res) => {
   const token = jwt.sign({
     userId: user.id
   }, process.env.ENCRYPTION_KEY!!, {
-    expiresIn: '10m'
+    expiresIn: '1d'
   });
   res.json({
     user,

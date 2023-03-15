@@ -9,7 +9,6 @@
 
 // TODO: Client-side logout page
 // TODO: Server-side logout page
-// TODO: Server-side cookies for jwt, will remove need for jwt_body in request bodies.
 // TODO: design appearance better
 // TODO: creating a reptile
 // TODO: deleting a reptile
@@ -27,6 +26,11 @@ export const Dashboard = () => {
   const [showReptiles, setShowReptiles] = useState(false);
   const [showSchedule, setShowSchedule] = useState(true);
   useEffect(() => {
+    if (!window.localStorage.getItem("token")) {
+      navigate("/home", {
+        replace: true
+      });
+    }
     console.log(api);
   }, []);
 
@@ -55,6 +59,7 @@ const ReptilesDOM = () => {
     fetch("http://localhost:8000/reptile/")
       .then(response => response.json())
       .then(res => {
+        //handle 401 error, remove "token" from localStorage
         setReptiles(res.reptiles as Reptile[]);
         setLoadingReptiles(false);
       });
