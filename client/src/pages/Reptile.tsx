@@ -1,5 +1,9 @@
 // TODO: Reptile Page
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useApi } from "../hooks/useApi";
+
 // I should see a list of all of the feedings for this reptile
 // I should see a list of all of the husbandry records for this reptile
 // I should see a list of all of the schedules for this reptile.
@@ -10,8 +14,19 @@
 
 export const Reptile = () => {
 
-    return (
-        <>
-        </>
-    )
+  const navigate = useNavigate();
+  const api = useApi();
+
+  useEffect(() => {
+    if (!window.localStorage.getItem("token")) {
+      navigate("/home");
+    }
+    console.log(api);
+  }, []);
+
+
+  return (
+    <>
+    </>
+  )
 }

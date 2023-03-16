@@ -31,48 +31,48 @@ type CreateUserBody = {
 }
 
 const createUser = (client: PrismaClient): RequestHandler =>
-async (req, res) => {
-  const {firstName, lastName, email, password} = req.body as CreateUserBody;
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = await client.user.create({
-    data: {
-      firstName,
-      lastName,
-      email,
-      passwordHash,
-    },
-  });
-  const token = jwt.sign({
-    userId: user.id
-  }, process.env.ENCRYPTION_KEY!!, {
-    expiresIn: '10m'
-  });
-  res.json({ user, token });
-}
-
-const getSchedules = (client: PrismaClient): RequestHandler =>
-async (req: RequestWithJWTBody, res) => {
-  console.log("getSchedules called");
-  const user = await getUser(req, client);
-  if (!user){
-      res.status(401).json({ message: "Unauthorized" });
-      return;
+  async (req, res) => {
+    const { firstName, lastName, email, password } = req.body as CreateUserBody;
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await client.user.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        passwordHash,
+      },
+    });
+    const token = jwt.sign({
+      userId: user.id
+    }, process.env.ENCRYPTION_KEY!!, {
+      expiresIn: '1d'
+    });
+    res.json({ user, token });
   }
 
-  const schedules = await client.schedule.findMany({
-    where: {
-      userId: user.id
+const getSchedules = (client: PrismaClient): RequestHandler =>
+  async (req: RequestWithJWTBody, res) => {
+    console.log("getSchedules called");
+    const user = await getUser(req, client);
+    if (!user) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
     }
-  })
-  res.json({ data: "Got schedules for user", schedules });
 
-}
+    const schedules = await client.schedule.findMany({
+      where: {
+        userId: user.id
+      }
+    })
+    res.json({ data: "Got schedules for user", schedules });
+
+  }
 
 export const usersController = controller(
   "users",
   [
-    { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true},
+    { path: "/", endpointBuilder: createUser, method: "post", skipAuth: true },
     { path: "/me", endpointBuilder: getMe, method: "get" },
-    { path: "/schedule", endpointBuilder: getSchedules, method: "get" }, 
+    { path: "/schedule", endpointBuilder: getSchedules, method: "get" },
   ]
 )
