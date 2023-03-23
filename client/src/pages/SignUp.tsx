@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom";
+import { AuthContext } from "../contexts/auth";
+import { useApi } from "../hooks/useApi";
+import { useNavigate } from "react-router-dom";
+import { Api } from "../lib/api";
 
 // TODO: Signup Page
 
@@ -20,8 +24,11 @@ export const SignUp = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const api = useApi();
+  const setToken = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  function signup() {
+  async function signup() {
     if (!firstName || !lastName || !email || !password) return;
     console.log(firstName);
     console.log(lastName);
@@ -33,20 +40,15 @@ export const SignUp = () => {
       lastName: lastName,
       email: email,
       password: password
-    }
+    };
 
-    fetch(`${import.meta.env.VITE_SERVER_URL}/users`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(user)
-    })
-      .then(r => r.json())
-      .then(body => {
-        window.localStorage.setItem("token", body.token);
-        console.log(body);
+    const resultBody = await api.post(`${import.meta.env.VITE_SERVER_URL}/users`, user);
+    if (resultBody.token) {
+      setToken(resultBody.token);
+      navigate(`/dashboard/${resultBody.user.userId}`, {
+        replace: true
       });
+    }
   }
 
   return (

@@ -4,12 +4,15 @@ type Method = "get" | "post" | "put" | "del";
 
 export class Api {
   private token = "";
+  constructor(token: string = "") {
+    this.token = token;
+  }
   private async makeRequest(url: string, method: Method, body: Record<string, any> = {}) {
     const options: RequestInit = {
       method,
       headers: {
         "Content-Type": "application/json",
-        // "Authorization": "Bearer <your token>" // for token auth
+        "Authorization": `Bearer ${this.token}` // for token auth
       },
       // credentials: 'include' // for session and cookies
     }
