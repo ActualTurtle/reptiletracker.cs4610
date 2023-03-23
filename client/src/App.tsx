@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
 import { createBrowserRouter, RouterProvider, useLocation } from "react-router-dom"
 import { ApiContext } from "./contexts/api"
+import { AuthContext } from "./contexts/auth"
 import { Api } from "./lib/api"
+import { useAuth } from "./hooks/useAuth"
 import { Home } from "./pages/Home"
 import { Root } from "./pages/Root"
 import { Dashboard } from "./pages/Dashboard"
@@ -40,18 +42,16 @@ const router = createBrowserRouter([
 
 export const App = () => {
 
-  const [api, setApi] = useState(new Api());
-
-  // useEffect(() => {
-  //   setApi(new Api());
-  // }, []);
+  const { token, setToken } = useAuth();
 
 
   return (
     <>
-      <ApiContext.Provider value={api}>
-        <RouterProvider router={router} />
-      </ApiContext.Provider>
+      <AuthContext.Provider value={setToken}>
+        <ApiContext.Provider value={new Api(token)}>
+          <RouterProvider router={router} />
+        </ApiContext.Provider>
+      </AuthContext.Provider>
     </>
   )
 }
