@@ -5,12 +5,6 @@ import { useApi } from "../hooks/useApi";
 import { useNavigate } from "react-router-dom";
 import { Api } from "../lib/api";
 
-// TODO: Signup Page
-
-// I should be able to create a user account
-// I should be able to navigate to the Login page
-// Upon creating an account I should be redirected to the dashboard page
-
 interface User {
   id?: number;
   firstName: String;
@@ -30,10 +24,6 @@ export const SignUp = () => {
 
   async function signup() {
     if (!firstName || !lastName || !email || !password) return;
-    console.log(firstName);
-    console.log(lastName);
-    console.log(email);
-    console.log(password);
 
     const user: User = {
       firstName: firstName,

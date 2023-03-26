@@ -2,10 +2,6 @@ import { useContext, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/auth";
 import { useApi } from "../hooks/useApi";
-// TODO: Login Page
-
-// I should be able to sign into a user account
-// Upon signing in, I should be redirected to the dashboard page
 
 interface User {
   id?: number;
@@ -16,20 +12,26 @@ interface User {
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorDisplayed, setErrorDisplayed] = useState(false);
   const setToken = useContext(AuthContext);
 
   const api = useApi();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (errorDisplayed) {
+      const timeout = setTimeout(() => {
+        setErrorDisplayed(false);
+      }, 1500);
+      return () => {
+        clearTimeout(timeout);
+      }
+    }
+    return () => { };
+  }, [errorDisplayed]);
+
   async function login() {
     if (!email || !password) return;
-    console.log(email);
-    console.log(password);
-
-    // TODO: Get user by username
-    // compare hashed passes
-    // if true, navigate to dashboard
-    // if false, print error message, clear username and password
 
     const user: User = {
       email: email,
@@ -42,6 +44,10 @@ export const Login = () => {
       navigate(`/dashboard`, {
         replace: true
       });
+    } else {
+      setEmail("");
+      setPassword("");
+      setErrorDisplayed(true);
     }
   }
 
@@ -67,6 +73,8 @@ export const Login = () => {
           <Link to={`/signup`} className="login-links center">Signup</Link>
         </span>
       </div>
+
+      <div className={`popup ${errorDisplayed ? 'show' : ''}`}>Incorrect Email or Password</div>
     </div>
   )
 }

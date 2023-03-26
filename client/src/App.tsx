@@ -7,7 +7,7 @@ import { useAuth } from "./hooks/useAuth"
 import { Home } from "./pages/Home"
 import { Root } from "./pages/Root"
 import { Dashboard } from "./pages/Dashboard"
-import { Reptile } from "./pages/Reptile"
+import { Reptiles } from "./pages/Reptiles"
 import { Login } from "./pages/Login"
 import { SignUp } from "./pages/SignUp"
 import { NewReptile } from "./pages/NewReptile"
@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'reptile/:id',
-        element: <Reptile />
+        element: <Reptiles />
       },
       {
         path: 'dashboard',
