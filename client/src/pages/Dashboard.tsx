@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useApi } from "../hooks/useApi";
 import { useAuth } from "../hooks/useAuth";
+import { speciesStrings } from "../types/Strings";
 export const Dashboard = () => {
   const navigate = useNavigate();
   const api = useApi();
@@ -43,19 +44,20 @@ export const Dashboard = () => {
     setLoadingReptiles(false);
   }
 
-  async function getSchedules() {
+  async function getSchedules(day: string) {
     const resultBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/users/schedule`);
-    setSchedules(resultBody.schedules as Schedule[]);
-    setLoadingSchedules(false);
-  }
-
-  function filterSchedules(day: string) {
+    const allSchedules = resultBody.schedules as Schedule[];
     const filteredSchedules = [];
-    for (let i = 0; i < schedules.length; i++) {
-      if (schedules[i][day.toLowerCase() as keyof Schedule]) {
-        filteredSchedules.push(schedules[i]);
+    console.log(allSchedules);
+    console.log(allSchedules[0][day.toLowerCase() as keyof Schedule])
+    for (let i = 0; i < allSchedules.length; i++) {
+      console.log(allSchedules[i][day.toLowerCase() as keyof Schedule])
+      if (allSchedules[i][day.toLowerCase() as keyof Schedule]) {
+        filteredSchedules.push(allSchedules[i]);
       }
     }
+    setSchedules(filteredSchedules);
+    setLoadingSchedules(false);
   }
 
   useEffect(() => {
@@ -67,15 +69,11 @@ export const Dashboard = () => {
 
     getReptiles();
 
-    getSchedules();
-
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     setDay(days[new Date().getDay()]);
+    getSchedules(days[new Date().getDay()]);
 
-    filterSchedules(days[new Date().getDay()]);
   }, []);
-
-
 
   return (
     <div>
@@ -128,7 +126,7 @@ const ReptilesDOM = (props: ReptileProps) => {
       {props.reptiles.map(reptile => {
         return (
           <div className="reptile" onClick={() => navigate(`/reptile/${reptile.id}`, { replace: true })}>
-            <p>Species: {reptile.species}</p>
+            <p>Species: {speciesStrings[reptile.species.toString()]}</p>
             <p>Name: {reptile.name}</p>
             <p>Sex: {reptile.sex == "m" ? "Male" : "Female"}</p>
           </div>
@@ -177,7 +175,6 @@ const ScheduleDOM = (props: ScheduleProps) => {
                 <p>Reptile: {schedule.reptileId}</p>
                 <p>Type: {schedule.type}</p>
                 <p>Description: {schedule.description}</p>
-                <p>Last updated: {schedule.updatedAt.toLocaleDateString()}</p>
               </div>
             )
           })

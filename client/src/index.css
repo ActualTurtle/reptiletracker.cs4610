@@ -138,7 +138,8 @@ button:focus-visible {
   flex-direction: column;
 }
 
-.reptile {
+.reptile,
+.schedule {
   border: thick double darkblue;
 }
 

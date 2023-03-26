@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
 import { useAuth } from "../hooks/useAuth";
-
+import { speciesStrings } from "../types/Strings";
 export const NewReptile = () => {
 
   const navigate = useNavigate();
@@ -53,10 +53,10 @@ export const NewReptile = () => {
       <div className="inputs">
         Species:
         <select name="species" value={species} onChange={(e) => setSpecies(e.target.value)} className="text-inputs">
-          <option value="ball_python">Ball Python</option>
-          <option value="king_snake">King Snake</option>
-          <option value="corn_snake">Corn Snake</option>
-          <option value="redtail_boa">Redtail Boa</option>
+          <option value="ball_python">{speciesStrings.ball_python}</option>
+          <option value="king_snake">{speciesStrings.king_snake}</option>
+          <option value="corn_snake">{speciesStrings.corn_snake}</option>
+          <option value="redtail_boa">{speciesStrings.redtail_boa}</option>
         </select>
       </div>
       <div className="inputs">
