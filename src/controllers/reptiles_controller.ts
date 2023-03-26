@@ -50,6 +50,22 @@ async (req: RequestWithJWTBody, res) => {
   
 }
 
+const getReptile = (client: PrismaClient): RequestHandler =>
+async (req: RequestWithJWTBody, res) => {
+    const user = await getUser(req, client);
+    if (!user){
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+    const reptile = await client.reptile.findUnique({
+        where: {
+            id: parseInt(req.params.reptileid)
+        }
+    })
+    res.json({ message: "getting unique reptile", reptile });
+  
+}
+
 const deleteReptile = (client: PrismaClient): RequestHandler =>
 async (req: RequestWithJWTBody, res) => {
     const user = await getUser(req, client);
@@ -333,6 +349,7 @@ export const reptileController = controller(
     [
       { path: "/", endpointBuilder: createReptile, method: "post"},
       { path: "/", endpointBuilder: getAllReptiles, method: "get" },
+      { path: "/:reptileid", endpointBuilder: getReptile, method: "get"},
       { path: "/:reptileid", endpointBuilder: deleteReptile, method: "delete"},
       { path: "/:reptileid", endpointBuilder: updateReptile, method: "put"},
 

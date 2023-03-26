@@ -89,8 +89,6 @@ button:focus-visible {
 }
 
 .login-links {
-  /* padding-left: 10%;
-  padding-right: 10%; */
   display: flex;
   align-items: center;
   padding: 10px;
@@ -134,4 +132,49 @@ button:focus-visible {
 
 .column {
   flex-direction: column;
+}
+
+.scrollable {
+  overflow-y: auto;
+  width: 33%;
+}
+
+.lists {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+}
+
+.full {
+  height: 65vh;
+}
+
+.items {
+  display: flex;
+  border: 1px solid;
+  flex-flow: column;
+  width: 90%;
+  align-items: center;
+}
+
+div .update {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.popup {
+  position: fixed;
+  padding: 16px;
+  color: black;
+  font-size: 30px;
+  background-color: rgb(251, 4, 4);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(100px);
+  transition: all .3s ease;
+}
+
+.popup.show {
+  transform: translateY(0px);
 }
