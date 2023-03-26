@@ -10,6 +10,7 @@ import { Dashboard } from "./pages/Dashboard"
 import { Reptile } from "./pages/Reptile"
 import { Login } from "./pages/Login"
 import { SignUp } from "./pages/SignUp"
+import { NewReptile } from "./pages/NewReptile"
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
         element: <Reptile />
       },
       {
-        path: 'dashboard/:id',
+        path: 'dashboard',
         element: <Dashboard />,
       },
       {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: 'signup',
         element: <SignUp />
+      },
+      {
+        path: 'new_reptile',
+        element: <NewReptile />
       },
       {
         path: '/',

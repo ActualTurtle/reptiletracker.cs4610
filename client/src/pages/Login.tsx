@@ -39,7 +39,7 @@ export const Login = () => {
     const resultBody = await api.post(`${import.meta.env.VITE_SERVER_URL}/login`, { email, password });
     if (resultBody.token) {
       setToken(resultBody.token);
-      navigate(`/dashboard/${resultBody.user.userId}`, {
+      navigate(`/dashboard`, {
         replace: true
       });
     }

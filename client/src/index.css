@@ -49,6 +49,10 @@ button {
   transition: border-color 0.25s;
 }
 
+button.selected {
+  border-color: #222222;
+}
+
 button:hover {
   border-color: #646cff;
 }
@@ -135,3 +139,9 @@ button:focus-visible {
 .column {
   flex-direction: column;
 }
+
+.reptile {
+  border: thick double darkblue;
+}
+
+.reptile p {}

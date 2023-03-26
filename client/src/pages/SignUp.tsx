@@ -45,7 +45,7 @@ export const SignUp = () => {
     const resultBody = await api.post(`${import.meta.env.VITE_SERVER_URL}/users`, user);
     if (resultBody.token) {
       setToken(resultBody.token);
-      navigate(`/dashboard/${resultBody.user.id}`, {
+      navigate(`/dashboard`, {
         replace: true
       });
     }
