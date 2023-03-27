@@ -27,7 +27,7 @@ export const Login = () => {
         clearTimeout(timeout);
       }
     }
-    return () => {};
+    return () => { };
   }, [errorDisplayed]);
 
   async function login() {
@@ -41,7 +41,7 @@ export const Login = () => {
     const resultBody = await api.post(`${import.meta.env.VITE_SERVER_URL}/login`, { email, password });
     if (resultBody.token) {
       setToken(resultBody.token);
-      navigate(`/dashboard/${resultBody.user.id}`, {
+      navigate(`/dashboard`, {
         replace: true
       });
     } else {

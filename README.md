@@ -48,6 +48,6 @@ npm run
 1. Create a user using the "Create User" request.
 1. Run any of the other requests that your heart desires.
 
-> The jwt token will expire after 10 minutes. Should the jwt token expire, run the "Sign into account" to get a new one for the same user.
+> The jwt token will expire after a day. Should the jwt token expire, run the "Sign into account" to get a new one for the same user.
 
 > The postman project will use the most recent jwt generated from either of those requests. If you would like to create a new user, edit the body of the "Create User" request to be unique. You can then sign into any user by editting the body of the "Sign into account" request to match a user's information.

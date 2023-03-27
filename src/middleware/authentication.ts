@@ -13,6 +13,6 @@ export const authenticationMiddleware: RequestHandler = async (req: RequestWithJ
     console.log(error);
     res.status(401).json({ message: "Unauthorized" });
     return;
-  } 
+  }
   next();
 }
