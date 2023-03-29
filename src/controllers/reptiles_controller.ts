@@ -5,6 +5,7 @@ import { RequestWithJWTBody } from "../dto/jwt";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { getSourceMapRange, toEditorSettings } from "typescript";
+import { cwd } from "process";
 
 type reptile = {
     species: string, // one of "ball_python", "king_snake", "corn_snake", "redtail_boa"
@@ -101,8 +102,7 @@ async (req: RequestWithJWTBody, res) => {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
-
-    
+    console.log("Enpoint Reached");
     const existing_reptlie = await client.reptile.findFirst({
         where: {
             id: parseInt(req.params.reptileid),

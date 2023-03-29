@@ -61,7 +61,7 @@ export const Reptiles = () => {
       </div>
       <div className="update">
         {/* TODO: Make button do stuff */}
-        <button>Update Reptile</button>
+        <button onClick={() => navigate(`/reptile/${reptile!.id}/update`)}>Update Reptile</button>
       </div>
       
       <div className="lists full">

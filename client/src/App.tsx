@@ -11,6 +11,7 @@ import { Reptiles } from "./pages/Reptiles"
 import { Login } from "./pages/Login"
 import { SignUp } from "./pages/SignUp"
 import { NewReptile } from "./pages/NewReptile"
+import { UpdateReptile } from "./pages/UpdateReptile"
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: 'reptile/:id',
         element: <Reptiles />
+      },
+      {
+        path: 'reptile/:id/update',
+        element: <UpdateReptile />
       },
       {
         path: 'dashboard',
