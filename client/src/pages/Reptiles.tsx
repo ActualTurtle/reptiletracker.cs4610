@@ -21,16 +21,17 @@ export const Reptiles = () => {
   const api = useApi();
 
   async function getReptileInfo() {
-    const reptileBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${window.location.href.slice(-1)}`);
+    const repid = window.location.href.split("/")[4];
+    const reptileBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${repid}`);
     setReptile(reptileBody.reptile);
 
-    const feedingBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${window.location.href.slice(-1)}/feeding`);
+    const feedingBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${repid}/feeding`);
     await setFeedings(feedingBody.feedings);
 
-    const husbandryBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${window.location.href.slice(-1)}/husbandry`);
+    const husbandryBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${repid}/husbandry`);
     await setHusbandries(husbandryBody.husbandries);
 
-    const scheduleBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${window.location.href.slice(-1)}/schedule`);
+    const scheduleBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${repid}/schedule`);
     await setSchedules(scheduleBody.schedules);
 
     const dayNames = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -46,7 +47,7 @@ export const Reptiles = () => {
     if (!window.localStorage.getItem("token")) {
       navigate("/home");
     }
-    // console.log(api);
+
     getReptileInfo();
   }, []);
 

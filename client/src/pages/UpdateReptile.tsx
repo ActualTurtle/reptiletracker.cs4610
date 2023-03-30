@@ -14,12 +14,23 @@ export const UpdateReptile = () => {
   const [species, setSpecies] = useState("ball_python");
   const [errorMessage, setErrorMessage] = useState("");
 
+
+  async function getReptileInfo() {
+    const id = window.location.href.split("/")[4]; 
+    const reptileBody = await api.get(`${import.meta.env.VITE_SERVER_URL}/reptile/${id}`);
+    setName(reptileBody.reptile.name);
+    setSex(reptileBody.reptile.sex);
+    setSpecies(reptileBody.reptile.species);
+  }
+
   useEffect(() => {
     if (!token) {
       navigate("/"), {
         replace: true
       }
     }
+    getReptileInfo();
+    
   }, []);
 
   async function updateReptile() {
@@ -33,7 +44,7 @@ export const UpdateReptile = () => {
       sex,
     }
 
-    let id = window.location.href.split("/")[4]
+    const id = window.location.href.split("/")[4]; 
     const responseBody = await api.put(`${import.meta.env.VITE_SERVER_URL}/reptile/${id}`, reptile);
     if (responseBody.message == "Updated a reptile") {
       navigate(`/reptile/${id}`, { replace: true });

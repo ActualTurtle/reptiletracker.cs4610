@@ -58,13 +58,13 @@ async (req: RequestWithJWTBody, res) => {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
+    // console.log(req.params.reptileid)
     const reptile = await client.reptile.findUnique({
         where: {
             id: parseInt(req.params.reptileid)
         }
     })
     res.json({ message: "getting unique reptile", reptile });
-  
 }
 
 const deleteReptile = (client: PrismaClient): RequestHandler =>
