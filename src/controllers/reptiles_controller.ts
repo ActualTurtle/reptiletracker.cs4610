@@ -5,6 +5,7 @@ import { RequestWithJWTBody } from "../dto/jwt";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { getSourceMapRange, toEditorSettings } from "typescript";
+import { cwd } from "process";
 
 type reptile = {
     species: string, // one of "ball_python", "king_snake", "corn_snake", "redtail_boa"
@@ -57,13 +58,13 @@ async (req: RequestWithJWTBody, res) => {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
+    // console.log(req.params.reptileid)
     const reptile = await client.reptile.findUnique({
         where: {
             id: parseInt(req.params.reptileid)
         }
     })
     res.json({ message: "getting unique reptile", reptile });
-  
 }
 
 const deleteReptile = (client: PrismaClient): RequestHandler =>
@@ -101,8 +102,7 @@ async (req: RequestWithJWTBody, res) => {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
-
-    
+    console.log("Enpoint Reached");
     const existing_reptlie = await client.reptile.findFirst({
         where: {
             id: parseInt(req.params.reptileid),
@@ -162,7 +162,7 @@ async (req: RequestWithJWTBody, res) => {
             foodItem
         }
     });
-    res.json({ message: "Create a feeding for a reptile", feeding });
+    res.json({ message: "Created a feeding", feeding });
     
 }
 
@@ -313,7 +313,7 @@ async (req: RequestWithJWTBody, res) => {
         }
     })
 
-    res.json({ message: "Create a schedule for reptile", schedule});
+    res.json({ message: "Created a schedule", schedule});
 }
 
 const getSchedules = (client: PrismaClient): RequestHandler =>
