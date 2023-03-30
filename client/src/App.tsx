@@ -12,6 +12,9 @@ import { Login } from "./pages/Login"
 import { SignUp } from "./pages/SignUp"
 import { NewReptile } from "./pages/NewReptile"
 import { UpdateReptile } from "./pages/UpdateReptile"
+import { NewFeeding } from "./pages/NewFeeding"
+import { NewHusbandry } from "./pages/NewHusbandry"
+import { NewSchedule } from "./pages/NewSchedule"
 
 const router = createBrowserRouter([
   {
@@ -25,6 +28,18 @@ const router = createBrowserRouter([
       {
         path: 'reptile/:id/update',
         element: <UpdateReptile />
+      },
+      {
+        path: 'reptile/:id/feeding',
+        element: <NewFeeding />
+      },
+      {
+        path: 'reptile/:id/husbandry',
+        element: <NewHusbandry />
+      },
+      {
+        path: 'reptile/:id/schedule',
+        element: <NewSchedule />
       },
       {
         path: 'dashboard',

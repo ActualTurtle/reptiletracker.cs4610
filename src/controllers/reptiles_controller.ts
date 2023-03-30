@@ -162,7 +162,7 @@ async (req: RequestWithJWTBody, res) => {
             foodItem
         }
     });
-    res.json({ message: "Create a feeding for a reptile", feeding });
+    res.json({ message: "Created a feeding", feeding });
     
 }
 
@@ -313,7 +313,7 @@ async (req: RequestWithJWTBody, res) => {
         }
     })
 
-    res.json({ message: "Create a schedule for reptile", schedule});
+    res.json({ message: "Created a schedule", schedule});
 }
 
 const getSchedules = (client: PrismaClient): RequestHandler =>

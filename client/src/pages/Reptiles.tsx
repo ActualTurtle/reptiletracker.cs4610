@@ -61,7 +61,6 @@ export const Reptiles = () => {
         <h2>{reptile?.sex}</h2>
       </div>
       <div className="update">
-        {/* TODO: Make button do stuff */}
         <button onClick={() => navigate(`/reptile/${reptile!.id}/update`)}>Update Reptile</button>
       </div>
       
@@ -102,9 +101,9 @@ export const Reptiles = () => {
 
       <div className="lists">
         {/* TODO: Make buttons do stuff */}
-        <button>Create Feeding</button>
-        <button>Create Husbandry Record</button>
-        <button>Create Schedule</button>
+        <button onClick={() => navigate(`/reptile/${reptile!.id}/feeding`)}>Create Feeding</button>
+        <button onClick={() => navigate(`/reptile/${reptile!.id}/husbandry`)}>Create Husbandry Record</button>
+        <button onClick={() => navigate(`/reptile/${reptile!.id}/schedule`)}>Create Schedule</button>
       </div>
     </div>
   )
