@@ -1,14 +1,8 @@
-// TODO: Reptile Page
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
 import { Reptile, Schedule, Feeding, HusbandryRecord } from "@prisma/client";
-
-// I should be able to update this reptile
-// I should be able to create a feeding for this reptile
-// I should be able to create a husbandry record for this reptile
-// I should be able to create a schedule for this reptile
+import { useAuth } from "../hooks/useAuth";
 
 export const Reptiles = () => {
   const [reptile, setReptile] = useState<Reptile>();
@@ -16,6 +10,7 @@ export const Reptiles = () => {
   const [husbandries, setHusbandries] = useState<HusbandryRecord[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [scheduleDays, setScheduleDays] = useState({});
+  const { token, setToken } = useAuth();
 
   const navigate = useNavigate();
   const api = useApi();
@@ -44,8 +39,10 @@ export const Reptiles = () => {
   }
 
   useEffect(() => {
-    if (!window.localStorage.getItem("token")) {
-      navigate("/home");
+    if (!token) {
+      navigate("/", {
+        replace: true
+      });
     }
 
     getReptileInfo();
@@ -53,6 +50,10 @@ export const Reptiles = () => {
 
   return (
     <div>
+      <button className="back-dashboard" onClick={() => navigate(`/dashboard`, { replace: true })}>
+        Dashboard
+      </button>
+
       <div className="lists">
         <h1>{reptile?.name}</h1>
       </div>
@@ -100,7 +101,6 @@ export const Reptiles = () => {
       </div>
 
       <div className="lists">
-        {/* TODO: Make buttons do stuff */}
         <button onClick={() => navigate(`/reptile/${reptile!.id}/feeding`)}>Create Feeding</button>
         <button onClick={() => navigate(`/reptile/${reptile!.id}/husbandry`)}>Create Husbandry Record</button>
         <button onClick={() => navigate(`/reptile/${reptile!.id}/schedule`)}>Create Schedule</button>

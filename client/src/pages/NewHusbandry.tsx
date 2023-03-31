@@ -45,7 +45,7 @@ export const NewHusbandry = () => {
 
   return (
     <div>
-      <p>Enter the information for new feeding</p>
+      <p>Enter the information for new husbandry record</p>
       <div className="inputs">
         Length:
         <input type="number" value={length} onChange={(e) => setLength(parseFloat(e.target.value))} className="text-inputs" />

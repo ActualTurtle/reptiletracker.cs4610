@@ -187,3 +187,14 @@ div .update {
 .popup.show {
   transform: translateY(0px);
 }
+
+.back-dashboard {
+  display: flex;
+  /* width: 20%; */
+  justify-content: flex-end;
+  border: 1px solid;
+}
+
+.day {
+  text-decoration: underline;
+}

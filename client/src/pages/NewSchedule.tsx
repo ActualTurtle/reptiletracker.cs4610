@@ -60,13 +60,13 @@ export const NewSchedule = () => {
 
   return (
     <div>
-      <p>Enter the information for new feeding</p>
+      <p>Enter the information for new schedule</p>
       <div className="inputs">
         Type:
         <select name="sex" value={type} onChange={(e) => setType(e.target.value)} className="text-inputs">
           <option value="feed">Feeding</option>
           <option value="record">Record</option>
-          <option value="clean">Record</option>
+          <option value="clean">Clean</option>
         </select>
       </div>
       <div className="inputs">

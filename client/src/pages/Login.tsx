@@ -54,8 +54,8 @@ export const Login = () => {
   return (
     <div>
       <h1 className="center">Login</h1>
-      <div className="login-buttons column">
-        <div className="inputs flex column">
+      <div className="flex center column">
+        <div className="inputs flex center column">
           <div className="inputs">
             Email:
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="text-inputs" />

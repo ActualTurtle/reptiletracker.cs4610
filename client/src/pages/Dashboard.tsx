@@ -1,19 +1,9 @@
-// TODO: Dashboard Page
-
-// I should see all of the schedules for my user for the day of the week it is (for example, if it is Monday then I should only see the schedules that have me doing something on Monday.)
-// I should see a list of all my reptiles
-// When selecting a reptile the app should navigate to the Reptile page
-// I should be able to create a new reptile (you can do this on this page via something like a pop up, or you can create a new page for this)
 // I should be able to delete a reptile.
 // I should be able to log out of my account
 
 // TODO: Client-side logout button
 // TODO: Server-side logout route
-// TODO: design appearance better
-// TODO: creating a reptile
 // TODO: deleting a reptile
-// TODO: selecting a reptile
-// TODO: switch between reptile and schedule view
 
 import { Reptile, Schedule } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -150,7 +140,7 @@ const ScheduleDOM = (props: ScheduleProps) => {
   if (props.loading) {
     return (
       <div>
-        <p>{props.day}</p>
+        <p className="day">{props.day}</p>
         <p>Loading schedules...</p>
       </div>
     )
@@ -158,14 +148,14 @@ const ScheduleDOM = (props: ScheduleProps) => {
   if (props.schedules.length == 0) {
     return (
       <div>
-        <p>{props.day}</p>
+        <p className="day">{props.day}</p>
         <p>No schedules for today.</p>
       </div>
     )
   }
   return (
     <div>
-      <p>{props.day}</p>
+      <p className="day">{props.day}</p>
       {props.loading && <p>Loading schedules...</p>}
       <div className="schedules">
         {
