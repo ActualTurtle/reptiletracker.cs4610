@@ -65,6 +65,11 @@ export const Dashboard = () => {
 
   }, []);
 
+  useEffect(() => {
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    getSchedules(days[new Date().getDay()]);
+  }, [reptiles])
+
   function logout() {
     window.localStorage.setItem("token", "");
     navigate("/");
