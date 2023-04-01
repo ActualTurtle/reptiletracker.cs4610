@@ -51,7 +51,7 @@ export const Dashboard = () => {
   }
 
   useEffect(() => {
-    if (!token) {
+    if (!token || token == "") {
       navigate("/", {
         replace: true
       });
@@ -65,10 +65,15 @@ export const Dashboard = () => {
 
   }, []);
 
+  function logout() {
+    window.localStorage.setItem("token", "");
+    navigate("/");
+  }
+
   return (
     <div>
       <div className="page-links">
-        <span><Link to={`/logout`} className="login-links">Logout</Link></span>
+        <span><button onClick={logout} className="login-links">Logout</button></span>
       </div>
       <div className="dashboard-buttons">
         <button onClick={() => { setShowSchedules(true); setShowReptiles(false); }} className={showSchedule ? "selected" : ""}>Schedules</button>
