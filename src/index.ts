@@ -19,11 +19,19 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(require('cors')());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
 
 type LoginBody = {
   email: string,
   password: string
 }
+
 
 // log in
 app.post("/login", async (req, res) => {

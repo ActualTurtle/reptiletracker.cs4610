@@ -9,7 +9,9 @@
 
 Copy contents of `.env.example` to a new file `.env`
 
-Then make sure to run: 
+Also copy the contents of `client/.env.local.example` to a new file `client/.env.local`
+
+Then, for the server, make sure to run: 
 
 ```
 yarn
@@ -37,7 +39,19 @@ yarn dev
 ```
 or 
 ```
-npm run 
+npm run dev
+```
+
+## To run client server:
+
+```
+yarn dev
+```
+
+or 
+
+```
+npm run dev
 ```
 
 ## To test the server using postman:

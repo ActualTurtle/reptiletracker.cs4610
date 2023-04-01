@@ -11,6 +11,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useApi } from "../hooks/useApi";
 import { useAuth } from "../hooks/useAuth";
 import { speciesStrings } from "../types/Strings";
+import { Api } from "../lib/api";
 export const Dashboard = () => {
   const navigate = useNavigate();
   const api = useApi();
@@ -39,7 +40,6 @@ export const Dashboard = () => {
     const allSchedules = resultBody.schedules as Schedule[];
     const filteredSchedules = [];
     console.log(allSchedules);
-    console.log(allSchedules[0][day.toLowerCase() as keyof Schedule])
     for (let i = 0; i < allSchedules.length; i++) {
       console.log(allSchedules[i][day.toLowerCase() as keyof Schedule])
       if (allSchedules[i][day.toLowerCase() as keyof Schedule]) {
@@ -76,7 +76,7 @@ export const Dashboard = () => {
       </div>
       <div>
         {showReptiles &&
-          <ReptilesDOM reptiles={reptiles} loading={loadingReptiles}></ReptilesDOM>
+          <ReptilesDOM reptiles={reptiles} loading={loadingReptiles} setReptiles={setReptiles}></ReptilesDOM>
         }
         {showSchedule &&
           <ScheduleDOM schedules={schedules} loading={loadingSchedules} day={day}></ScheduleDOM>
@@ -88,11 +88,18 @@ export const Dashboard = () => {
 
 interface ReptileProps {
   reptiles: Reptile[],
-  loading: boolean
+  loading: boolean,
+  setReptiles: React.Dispatch<React.SetStateAction<Reptile[]>>,
 }
 
 const ReptilesDOM = (props: ReptileProps) => {
   const navigate = useNavigate();
+  const api = useApi();
+  async function deleteReptile(reptile: Reptile) {
+    const responseBody = await api.del(`${import.meta.env.VITE_SERVER_URL}/reptile/${reptile.id}`);
+    props.reptiles.splice(props.reptiles.findIndex(it => it == reptile), 1);
+    props.setReptiles([...props.reptiles]);
+  }
 
   if (props.loading) {
     return (
@@ -115,10 +122,13 @@ const ReptilesDOM = (props: ReptileProps) => {
     <div>
       {props.reptiles.map(reptile => {
         return (
-          <div className="reptile" onClick={() => navigate(`/reptile/${reptile.id}`, { replace: true })}>
-            <p>Species: {speciesStrings[reptile.species.toString()]}</p>
-            <p>Name: {reptile.name}</p>
-            <p>Sex: {reptile.sex == "m" ? "Male" : "Female"}</p>
+          <div className="reptile">
+            <div onClick={() => navigate(`/reptile/${reptile.id}`, { replace: true })}>
+              <p>Species: {speciesStrings[reptile.species.toString()]}</p>
+              <p>Name: {reptile.name}</p>
+              <p>Sex: {reptile.sex == "m" ? "Male" : "Female"}</p>
+            </div>
+            <button onClick={() => deleteReptile(reptile)}>Delete</button>
           </div>
         )
       })

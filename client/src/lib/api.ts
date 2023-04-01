@@ -1,6 +1,6 @@
 import { json } from "react-router-dom";
 
-type Method = "get" | "post" | "put" | "del";
+type Method = "get" | "post" | "put" | "del" | "DELETE";
 
 export class Api {
   private token = "";
@@ -12,7 +12,10 @@ export class Api {
       method,
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${this.token}` // for token auth
+        "Authorization": `Bearer ${this.token}`, // for token auth
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
       },
       // credentials: 'include' // for session and cookies
     }
@@ -38,6 +41,6 @@ export class Api {
   }
 
   del(url: string) {
-    return this.makeRequest(url, 'del');
+    return this.makeRequest(url, 'DELETE');
   }
 }
